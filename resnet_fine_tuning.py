@@ -39,6 +39,7 @@ from keras.applications.imagenet_utils import decode_predictions
 from keras.applications.imagenet_utils import preprocess_input
 from keras.applications.imagenet_utils import _obtain_input_shape
 from keras.engine.topology import get_source_inputs
+from keras.optimizers import Adam
 
 
 
@@ -373,6 +374,8 @@ if __name__ == '__main__':
     print("Last layer modified.")
     custom_resnet_model = Model(inputs=image_input,outputs= out)
     custom_resnet_model.summary()
+    adm = Adam(lr=0.001, beta_1=0.9, beta_2=0.999, epsilon=None, decay=0.0, amsgrad=False)
+
 
     # As we want to do fine tuning, we freeze the base layers to no loose the ImageNet learning totzlly
     for layer in custom_resnet_model.layers[:-1]:
@@ -380,7 +383,7 @@ if __name__ == '__main__':
 
     custom_resnet_model.layers[-1].trainable
 
-    custom_resnet_model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    custom_resnet_model.compile(loss='categorical_crossentropy',optimizer=adm,metrics=['accuracy'])
 
     #Train the model
     t=time.time()
@@ -419,7 +422,7 @@ if __name__ == '__main__':
 
     custom_resnet_model2.layers[-1].trainable
 
-    custom_resnet_model2.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
+    custom_resnet_model2.compile(loss='categorical_crossentropy',optimizer=adm,metrics=['accuracy'])
 
     # Start the training of our custom ResNet50
     t=time.time()
